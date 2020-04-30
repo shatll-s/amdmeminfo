@@ -39,7 +39,8 @@
 #endif
 
 #define VERSION "AMDMemInfo by Zuikkis <zuikkis@gmail.com>\n" \
-      "Updated by Yann St.Arnaud <ystarnaud@gmail.com>"
+	"Updated by Yann St.Arnaud <ystarnaud@gmail.com>\n" \
+	"Updaded for OS.dog. Version 0.1"
 
 #define LOG_INFO 1
 #define LOG_ERROR 2
@@ -79,6 +80,7 @@ typedef enum AMD_CHIPS {
   CHIP_POLARIS10,
   CHIP_POLARIS11,
   CHIP_POLARIS12,
+  CHIP_POLARIS30,
   CHIP_VEGA10,
   CHIP_RAVEN,
 } asic_type_t;
@@ -119,6 +121,7 @@ static const char *amd_asic_name[] = {
   "Polaris10",
   "Polaris11",
   "Polaris12",
+  "Polaris30",
   "Vega10",
   "Raven",
 };
@@ -166,9 +169,9 @@ static void showhelp(char *program)
     "-q, --quiet     Only output results\n"
     "-s, --short     Short form output - 1 GPU/line - <OpenCLID>:<PCI Bus.Dev.Func>:<GPU Type>:<BIOSVersion>:<Memory Type>\n"
     "--use-stderr    Output errors to stderr\n"
+	"--version, -v   Show version\n"
     "\n", VERSION, program);
 }
-
 
 // parse command line options
 static bool load_options(int argc, char *argv[])
@@ -179,6 +182,9 @@ static bool load_options(int argc, char *argv[])
   {
     if (!strcasecmp("--help", argv[i]) || !strcasecmp("-h", argv[i])) {
       showhelp(argv[0]);
+      return false;
+	} else if (!strcasecmp("--version", argv[i]) || !strcasecmp("-v", argv[i])) {
+	  printf("%s\n", VERSION);
       return false;
     } else if (!strcasecmp("--opencl", argv[i]) || !strcasecmp("-o", argv[i])) {
       opt_opencl_order = true;
@@ -227,6 +233,7 @@ static gputype_t gputypes[] = {
     { 0x1002, 0x7300, 0, 0xca, "Radeon R9 Fury/Nano/X", CHIP_FIJI},
     { 0x1002, 0x7300, 0, 0xcb, "Radeon R9 Fury", CHIP_FIJI},
     /* RX 5xx */
+	{ 0x1002, 0x67df, 0, 0xe1, "Radeon RX 590", CHIP_POLARIS30},
     { 0x1002, 0x67df, 0, 0xe7, "Radeon RX 580", CHIP_POLARIS10},
     { 0x1002, 0x67df, 0, 0xef, "Radeon RX 570", CHIP_POLARIS10},
     { 0x1002, 0x67ff, 0, 0xcf, "Radeon RX 560", CHIP_POLARIS11},
